@@ -1,0 +1,32 @@
+[project]
+name = "anubis"
+version = "0.0.1"
+description = "My collection of functions for many purposes"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [
+        {name = "Augusto Cesar Poot Hernandez", email = "dragopoot@gmail.com"},
+]
+dependencies = [
+             "numpy",
+             "matplotlib",
+             "pandas",
+             "seaborn",
+             "scikit-learn",
+             "matplotlib_venn",
+]
+
+[project.urls]
+Homepage = "https://github.com/acpooth/anubis"
+Issues = "https://github.com/acpooth/anubis/issues"
+
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+backend-path = ["."]
+
+[project.optional-dependencies]
+panel=[
+    "panel",
+]
