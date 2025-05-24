@@ -13,7 +13,6 @@
 #------------------------------
 """Module that contains IO functions"""
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 
