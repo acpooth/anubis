@@ -44,6 +44,19 @@ def load_listdict(filename, sep=' ', single=False):
             dictionary[k] = v
     return dictionary
 
+def save_list(fname, mylist, sep='\n'):
+    """Save a list into a file.
+
+    fname: str
+        filename
+    mylist: iterable?
+        list to save
+    sep: str
+        separator
+    """
+    with open(fname, 'w') as outf:
+        text = sep.join(mylist)
+        outf.write(text)
 
 def save_matrix(fname, matrix, headers, rownames, delimiter='\t'):
     """Create a text file with the matrix.

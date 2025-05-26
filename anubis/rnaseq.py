@@ -17,41 +17,46 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import seasborn as sns
+import seaborn as sns
 
-from sklearn.preprocessing import StandardScaler, RobustScaler
+from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-from matplotlib_venn import venn3
+# from matplotlib_venn import venn3
 
 
 def volcano(df, title=None, loc=2):
-     """Create a volcano plot from a snakePipes RNAseq DE result."""
-     down = df.Status == 'DOWN'
-     up = df.Status == 'UP'
-     noDE = df.Status.isnull()
+    """Create a volcano plot from a snakePipes RNAseq DE result."""
+    down = df.Status == 'DOWN'
+    up = df.Status == 'UP'
+    noDE = df.Status.isnull()
 
-     plt.scatter(df.log2FoldChange[up],
-                 -np.log(df.padj[up]),
-                 s=10, c='g', alpha=0.5,
-                 label=f'Up: {up.sum()}')
-     plt.scatter(df.log2FoldChange[noDE],
-                 -np.log(df.padj[noDE]),
-                 s=10, c='grey', alpha=0.3,
-                 label=f'No DE: {noDE.sum()}')
-     plt.scatter(df.log2FoldChange[down],
-                 -np.log(df.padj[down]),
-                 s=10, c='r', alpha=0.5,
-                 label=f'Down: {down.sum()}')
+    plt.scatter(df.log2FoldChange[up],
+                -np.log(df.padj[up]),
+                s=10, c='g', alpha=0.5,
+                label=f'Up: {up.sum()}')
+    plt.scatter(df.log2FoldChange[noDE],
+                -np.log(df.padj[noDE]),
+                s=10, c='grey', alpha=0.3,
+                label=f'No DE: {noDE.sum()}')
+    plt.scatter(df.log2FoldChange[down],
+                -np.log(df.padj[down]),
+                s=10, c='r', alpha=0.5,
+                label=f'Down: {down.sum()}')
 
-     plt.xlabel('log2(FoldChange)')
-     plt.ylabel("-log10(adj p-value)")
-     plt.legend(loc=loc, fontsize='x-small')
+    plt.xlabel('log2(FoldChange)')
+    plt.ylabel("-log10(adj p-value)")
+    plt.legend(loc=loc, fontsize='x-small')
 
-     if title:
-         plt.title(title)
+    if title:
+        plt.title(title)
+
 
 def plotPCA(countMatrix, groups=None, figsize=(6, 3)):
+    """Plot RNA-seq PCA.
+
+
+    """
     scaler = StandardScaler()
     pca = PCA()
     X_std = scaler.fit_transform(countMatrix.T)
@@ -63,10 +68,9 @@ def plotPCA(countMatrix, groups=None, figsize=(6, 3)):
     ax = fig.add_subplot(121)
 
     axlegend = fig.add_subplot(122)
-    #axlegend1 = fig.add_subplot(143)
-    #axlegend2 = fig.add_subplot(144)
     # PCA
-    sns.scatterplot(dfpca, y=1, x=0, hue=groups, style=dfpca.index, a
+    sns.scatterplot(dfpca, y=1, x=0, hue=groups, style=dfpca.index, ax=ax)
+
     ax.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]:.0%})')
     ax.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]:.0%})')
     ax.axhline(ls=':', c='grey')
@@ -80,18 +84,22 @@ def plotPCA(countMatrix, groups=None, figsize=(6, 3)):
         lab1 = handles[1][:ng]
         h2 = handles[0][ng:]
         lab2 = handles[1][ng:]
-        leg1 = axlegend.legend(h2, lab2, loc=2, title='Samples', fram
-        leg2 = axlegend.legend(h1, lab1, loc=9, title='Groups', frame
+        leg1 = axlegend.legend(h2, lab2, loc=2, title='Samples', frameon=False)
+        leg2 = axlegend.legend(h1, lab1, loc=9, title='Groups', frameon=False)
         axlegend.add_artist(leg1)
     else:
-        axlegend.legend(*ax.get_legend_handles_labels(), loc=2, title
+        axlegend.legend(*ax.get_legend_handles_labels(), loc=2, title='Sample',
+                        frameon=False)
     axlegend.axis('off')
-    #axlegend2.axis('off')
-
     plt.tight_layout()
 
 
 def get_DEgenes(df):
+    """Get the UP and DOWN regulated genes from a DE dataframe.
+
+    Arguments:
+    df -- DataFrame
+    """
     down = np.array(df.index[df.Status == 'DOWN'])
     up = np.array(df.index[df.Status == 'UP'])
     return {'down': down, 'up':up}
@@ -114,9 +122,9 @@ def read_DEfolders(pathlist, expnames):
     data = {}
     for path, name in zip(pathlist, expnames):
         path = Path(path)
-        data[name] = {"de": pd.read_table(next(path.glob("*results.ts
+        data[name] = {"de": pd.read_table(next(path.glob("*results.tsv")),
                                           index_col=0),
-                      "counts": pd.read_table(next(path.glob("*counts
+                      "counts": pd.read_table(next(path.glob("*counts*normalized*")),
                                               index_col=0)
                       }
     return data
