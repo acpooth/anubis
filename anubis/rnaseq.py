@@ -52,7 +52,7 @@ def volcano(df, title=None, loc=2):
         plt.title(title)
 
 
-def plotPCA(countMatrix, groups=None, figsize=(6, 3)):
+def plotPCA(countMatrix, groups=None, figsize=(6, 3), s=50):
     """Plot RNA-seq PCA.
 
 
@@ -69,7 +69,9 @@ def plotPCA(countMatrix, groups=None, figsize=(6, 3)):
 
     axlegend = fig.add_subplot(122)
     # PCA
-    sns.scatterplot(dfpca, y=1, x=0, hue=groups, style=dfpca.index, ax=ax)
+    sns.scatterplot(dfpca, y=1, x=0, hue=groups,
+                    s=s,
+                    style=dfpca.index, ax=ax)
 
     ax.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]:.0%})')
     ax.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]:.0%})')
