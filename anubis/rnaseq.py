@@ -59,12 +59,12 @@ def volcano(df, title=None, loc=2, show_top=0):
         plt.title(title)
 
     if show_top:
-        for _gene, _data in df.query("Status == 'UP'").sort_values('padj').head(10).iterrows():
+        for _gene, _data in df.query("Status == 'UP'").sort_values('padj').head(show_top).iterrows():
             x = _data.log2FoldChange
             y = -np.log(_data.padj)
             plt.annotate(_data['external_gene_name'], xy=(x,y), fontsize='xx-small', color='darkgrey')
 
-        for _gene, _data in df.query("Status == 'DOWN'").sort_values('padj').head(10).iterrows():
+        for _gene, _data in df.query("Status == 'DOWN'").sort_values('padj').head(show_top).iterrows():
             x = _data.log2FoldChange
             y = -np.log(_data.padj)
             plt.annotate(_data['external_gene_name'], xy=(x,y), fontsize='xx-small', color='darkgrey')
