@@ -25,8 +25,15 @@ from sklearn.decomposition import PCA
 # from matplotlib_venn import venn3
 
 
-def volcano(df, title=None, loc=2):
-    """Create a volcano plot from a snakePipes RNAseq DE result."""
+def volcano(df, title=None, loc=2, show_top=0):
+    """Create a volcano plot from a snakePipes RNAseq DE result.
+
+    Arguments:
+    ---------
+    show_top: int, [0]
+         Show the specified number of top p value genes UP regulated
+         and DOWN regulated genes
+    """
     down = df.Status == 'DOWN'
     up = df.Status == 'UP'
     noDE = df.Status.isnull()
@@ -51,11 +58,22 @@ def volcano(df, title=None, loc=2):
     if title:
         plt.title(title)
 
+    if show_top:
+        for _gene, _data in df.query("Status == 'UP'").sort_values('padj').head(10).iterrows():
+            x = _data.log2FoldChange
+            y = -np.log(_data.padj)
+            plt.annotate(_data['external_gene_name'], xy=(x,y), fontsize='xx-small', color='darkgrey')
+
+        for _gene, _data in df.query("Status == 'DOWN'").sort_values('padj').head(10).iterrows():
+            x = _data.log2FoldChange
+            y = -np.log(_data.padj)
+            plt.annotate(_data['external_gene_name'], xy=(x,y), fontsize='xx-small', color='darkgrey')
+
 
 def plotPCA(countMatrix, groups=None, figsize=(6, 3), s=50):
     """Plot RNA-seq PCA.
 
-
+    groups
     """
     scaler = StandardScaler()
     pca = PCA()
